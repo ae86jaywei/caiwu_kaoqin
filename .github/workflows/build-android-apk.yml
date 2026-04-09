@@ -29,19 +29,19 @@ jobs:
         echo "User: $(whoami)"
         
         # Switch Java version to 11
-        . ~/.bash_profile
-        jenv global 11
+        source ~/.bash_profile || true
+        jenv global 11 || true
         java -version
         
         # Build APK
-        cd app
+        cd FinanceAttendanceAndroid/app
         bash ./gradlew assembleRelease
 
     - name: Archive apk
       uses: actions/upload-artifact@v4
       with:
         name: apk
-        path: app/build/outputs/apk/release
+        path: FinanceAttendanceAndroid/app/build/outputs/apk/release
     
     - name: Clean build to avoid action/cache error
       run: rm -fr build
