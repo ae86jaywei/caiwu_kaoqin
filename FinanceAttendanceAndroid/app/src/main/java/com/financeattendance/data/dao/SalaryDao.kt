@@ -1,0 +1,27 @@
+package com.financeattendance.data.dao
+
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.financeattendance.data.entity.SalaryRecord
+
+@Dao
+interface SalaryDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(record: SalaryRecord)
+
+    @Update
+    suspend fun update(record: SalaryRecord)
+
+    @Delete
+    suspend fun delete(record: SalaryRecord)
+
+    @Query("SELECT * FROM salary_record WHERE (:personId = '' OR person_id = :personId) ORDER BY pay_date DESC")
+    suspend fun queryRecords(personId: String): List<SalaryRecord>
+
+    @Query("SELECT * FROM salary_record WHERE id = :id")
+    suspend fun getRecordById(id: String): SalaryRecord?
+}
