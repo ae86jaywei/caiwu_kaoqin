@@ -36,7 +36,7 @@ jobs:
         # Build APK
         cd FinanceAttendanceAndroid
         chmod +x gradlew
-        ./gradlew :app:assembleRelease
+        ./gradlew clean assembleRelease
 
     - name: Archive apk
       uses: actions/upload-artifact@v4
