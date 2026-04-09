@@ -92,3 +92,6 @@ lint-baseline.xml
 # OS
 .DS_Store
 Thumbs.db
+
+# docker-android-build-box
+docker-android-build-box/
