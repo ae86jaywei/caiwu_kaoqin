@@ -96,3 +96,27 @@ Thumbs.db
 # docker-android-build-box
 docker-android-build-box/
 .preferences
+.vs
+.vs/ProjectSettings.json
+.vs/slnx.sqlite
+.vs/CaiWu_KaoQin/CopilotIndices/18.4.111.64248/CodeChunks.db
+.vs/CaiWu_KaoQin/CopilotIndices/18.4.111.64248/CodeChunks.db-shm
+.vs/CaiWu_KaoQin/CopilotIndices/18.4.111.64248/CodeChunks.db-wal
+.vs/CaiWu_KaoQin/CopilotIndices/18.4.111.64248/SemanticSymbols.db
+.vs/CaiWu_KaoQin/CopilotIndices/18.4.111.64248/SemanticSymbols.db-shm
+.vs/CaiWu_KaoQin/CopilotIndices/18.4.111.64248/SemanticSymbols.db-wal
+.vs/CaiWu_KaoQin.slnx/copilot-chat/6a737eb7/sessions/38425e17-8d6f-4aae-8527-6471cf6a7300
+.vs/CaiWu_KaoQin.slnx/FileContentIndex/7cecc839-675e-4295-85ff-9a930389b1dd.vsidx
+.vs/CaiWu_KaoQin.slnx/FileContentIndex/7d627964-d487-4baa-8c24-299e9cafdfe4.vsidx
+.vs/CaiWu_KaoQin.slnx/FileContentIndex/57d5d081-0cc5-4cf0-9a62-3160380bfa04.vsidx
+.vs/CaiWu_KaoQin.slnx/FileContentIndex/52610b46-6c63-4a95-9a44-01c95a5e000e.vsidx
+.vs/CaiWu_KaoQin.slnx/FileContentIndex/f9023426-eb6d-437e-8f4f-7edbc8a3534c.vsidx
+.vs/CaiWu_KaoQin.slnx/v18/.wsuo
+.vs/CaiWu_KaoQin.slnx/v18/DocumentLayout.json
+.vs/CopilotSnapshots/175E42386F8DAE4A85276471CF6A7300/state.mpack
+.vs/CopilotSnapshots/175E42386F8DAE4A85276471CF6A7300/266DFFD0FAB4B14183C2EF7FA2D01922/1ABA2EAAE023E2DA29FB0CC58CF2DF3E
+.vs/CopilotSnapshots/175E42386F8DAE4A85276471CF6A7300/266DFFD0FAB4B14183C2EF7FA2D01922/3FD4FD5A3815B95EDDFCE82F221553EE
+.vs/CopilotSnapshots/175E42386F8DAE4A85276471CF6A7300/266DFFD0FAB4B14183C2EF7FA2D01922/9B9775A88015E6A35F969FEFBDED1DC0
+.vs/CopilotSnapshots/175E42386F8DAE4A85276471CF6A7300/266DFFD0FAB4B14183C2EF7FA2D01922/0160488E54FCFF919B9D1D92A34B687B
+.vs/CopilotSnapshots/175E42386F8DAE4A85276471CF6A7300/266DFFD0FAB4B14183C2EF7FA2D01922/832821DD1B8D452E6E177A3863FE3291
+.vs/CopilotSnapshots/175E42386F8DAE4A85276471CF6A7300/266DFFD0FAB4B14183C2EF7FA2D01922/67047776440059998753AB83C903CF3A
