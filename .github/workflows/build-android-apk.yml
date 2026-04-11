@@ -11,7 +11,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    container: ae86jaywei/android-build-docker:latest
+    container: ghcr.io/ae86jaywei/android-build-docker:latest
 
     steps:
     - uses: actions/checkout@v3
