@@ -18,7 +18,7 @@ jobs:
     
     - uses: actions/cache@v3
       with:
-        path: /root/.gradle/caches
+        path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
@@ -28,23 +28,69 @@ jobs:
       run: |
         mkdir -p $HOME/android-sdk
         cp -r /opt/android-sdk/* $HOME/android-sdk/
-        # 设置环境变量供后续步骤使用
         echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
         echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-        # 可选：将 cmdline-tools 加入 PATH
         echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
-
+    
+    # 添加 Compose 支持到 app/build.gradle
+    - name: Enable Compose in build.gradle
+      run: |
+        cd FinanceAttendanceAndroid/app
+        
+        # 添加 composeOptions
+        if ! grep -q "composeOptions {" build.gradle; then
+          sed -i '/android {/a\
+        composeOptions {\
+            kotlinCompilerExtensionVersion = "1.5.4"\
+        }' build.gradle
+        fi
+        
+        # 在 buildFeatures 中启用 compose
+        if grep -q "buildFeatures {" build.gradle; then
+          if ! grep -q "compose true" build.gradle; then
+            sed -i '/buildFeatures {/a\        compose true' build.gradle
+          fi
+        else
+          sed -i '/android {/a\
+        buildFeatures {\
+            viewBinding true\
+            compose true\
+        }' build.gradle
+        fi
+        
+        # 添加 Compose 依赖
+        if ! grep -q "compose-bom" build.gradle; then
+          sed -i '/dependencies {/a\
+    // Compose BOM and core libraries\
+    implementation platform("androidx.compose:compose-bom:2024.02.00")\
+    implementation "androidx.compose.ui:ui"\
+    implementation "androidx.compose.material3:material3"\
+    implementation "androidx.compose.ui:ui-tooling-preview"\
+    debugImplementation "androidx.compose.ui:ui-tooling"' build.gradle
+        fi
+        echo "Compose has been enabled"
+    
+    # 确保 Theme.kt 中有正确的 import
+    - name: Ensure Composable import in Theme.kt
+      run: |
+        cd FinanceAttendanceAndroid
+        THEME_FILE="app/src/main/java/com/financeattendance/ui/theme/Theme.kt"
+        if [ -f "$THEME_FILE" ] && ! grep -q "import androidx.compose.runtime.Composable" "$THEME_FILE"; then
+          sed -i '/^package /a\
+\
+import androidx.compose.runtime.Composable' "$THEME_FILE"
+          echo "Added missing import"
+        fi
+    
     - name: Build
       run: |
         echo "Work dir: $(pwd)"
         echo "User: $(whoami)"
         
-        # Switch Java version to 17 (default in docker image)
         source ~/.bash_profile 2>/dev/null || true
         jenv global 17 2>/dev/null || true
         java -version
         
-        # Build APK
         cd FinanceAttendanceAndroid
         chmod +x gradlew
         ./gradlew clean assembleRelease
