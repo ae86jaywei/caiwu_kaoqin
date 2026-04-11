@@ -58,7 +58,7 @@ jobs:
         }' build.gradle
         fi
         
-        # 添加 Compose 依赖
+        # 添�� Compose 依赖
         if ! grep -q "compose-bom" build.gradle; then
           sed -i '/dependencies {/a\
     // Compose BOM and core libraries\
@@ -77,8 +77,8 @@ jobs:
         THEME_FILE="app/src/main/java/com/financeattendance/ui/theme/Theme.kt"
         if [ -f "$THEME_FILE" ] && ! grep -q "import androidx.compose.runtime.Composable" "$THEME_FILE"; then
           sed -i '/^package /a\
-\
-import androidx.compose.runtime.Composable' "$THEME_FILE"
+ \
+ import androidx.compose.runtime.Composable' "$THEME_FILE"
           echo "Added missing import"
         fi
     
