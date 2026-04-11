@@ -11,7 +11,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    container: mingc/android-build-box:latest
+    container: ae86jaywei/android-build-docker:latest
 
     steps:
     - uses: actions/checkout@v3
@@ -28,9 +28,9 @@ jobs:
         echo "Work dir: $(pwd)"
         echo "User: $(whoami)"
         
-        # Switch Java version to 11
+        # Switch Java version to 17 (default in docker image)
         source ~/.bash_profile 2>/dev/null || true
-        jenv global 11 2>/dev/null || true
+        jenv global 17 2>/dev/null || true
         java -version
         
         # Build APK
