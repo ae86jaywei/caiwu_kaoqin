@@ -9,7 +9,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     container: ghcr.io/ae86jaywei/android-build-docker:latest
 
@@ -32,54 +31,67 @@ jobs:
         echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
         echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
     
-    # 添加 Compose 支持到 app/build.gradle
-    - name: Enable Compose in build.gradle
+    # 升级项目配置以支持 compileSdk 34
+    - name: Upgrade project to compileSdk 34 and AGP 8.1.4
       run: |
-        cd FinanceAttendanceAndroid/app
-        
-        # 添加 composeOptions
-        if ! grep -q "composeOptions {" build.gradle; then
-          sed -i '/android {/a\
-        composeOptions {\
-            kotlinCompilerExtensionVersion = "1.5.4"\
-        }' build.gradle
+        # 升级项目级 build.gradle 中的 AGP 版本
+        PROJECT_GRADLE="FinanceAttendanceAndroid/build.gradle"
+        if grep -q "classpath \"com.android.tools.build:gradle:8.0.2\"" "$PROJECT_GRADLE"; then
+          sed -i 's/classpath "com.android.tools.build:gradle:8.0.2"/classpath "com.android.tools.build:gradle:8.1.4"/' "$PROJECT_GRADLE"
+          echo "Upgraded AGP to 8.1.4"
         fi
         
-        # 在 buildFeatures 中启用 compose
-        if grep -q "buildFeatures {" build.gradle; then
-          if ! grep -q "compose true" build.gradle; then
-            sed -i '/buildFeatures {/a\        compose true' build.gradle
-          fi
+        # 修改 app/build.gradle 中的 compileSdk 和 targetSdk
+        APP_GRADLE="FinanceAttendanceAndroid/app/build.gradle"
+        sed -i 's/compileSdk 33/compileSdk 34/' "$APP_GRADLE"
+        sed -i 's/targetSdk 33/targetSdk 34/' "$APP_GRADLE"
+        echo "Updated compileSdk and targetSdk to 34"
+        
+        # 确保 buildToolsVersion 存在
+        if ! grep -q "buildToolsVersion" "$APP_GRADLE"; then
+          sed -i '/compileSdk 34/a\    buildToolsVersion "34.0.0"' "$APP_GRADLE"
+        fi
+        
+        # 设置 Compose 编译器版本（兼容 Kotlin 1.9.22）
+        if grep -q "composeOptions {" "$APP_GRADLE"; then
+          sed -i 's/kotlinCompilerExtensionVersion = .*/kotlinCompilerExtensionVersion = "1.5.10"/' "$APP_GRADLE"
         else
           sed -i '/android {/a\
-        buildFeatures {\
-            viewBinding true\
-            compose true\
-        }' build.gradle
+        composeOptions {\
+            kotlinCompilerExtensionVersion = "1.5.10"\
+        }' "$APP_GRADLE"
         fi
-        
-        # 添 Compose 依赖
-        if ! grep -q "compose-bom" build.gradle; then
-          sed -i '/dependencies {/a\
-          // Compose BOM and core libraries\
-          implementation platform("androidx.compose:compose-bom:2024.02.00")\
-          implementation "androidx.compose.ui:ui"\
-          implementation "androidx.compose.material3:material3"\
-          implementation "androidx.compose.ui:ui-tooling-preview"\
-          debugImplementation "androidx.compose.ui:ui-tooling"' build.gradle
-        fi
-        echo "Compose has been enabled"
     
-    # 确保 Theme.kt 中有正确的 import
-    - name: Ensure Composable import in Theme.kt
+    # 添加 Compose 依赖（如果缺失）
+    - name: Add Compose dependencies
+      run: |
+        APP_GRADLE="FinanceAttendanceAndroid/app/build.gradle"
+        if ! grep -q "compose-bom" "$APP_GRADLE"; then
+          sed -i '/dependencies {/a\
+    // Compose BOM and libraries\
+    implementation platform("androidx.compose:compose-bom:2024.02.00")\
+    implementation "androidx.compose.ui:ui"\
+    implementation "androidx.compose.material3:material3"\
+    implementation "androidx.compose.ui:ui-tooling-preview"\
+    debugImplementation "androidx.compose.ui:ui-tooling"' "$APP_GRADLE"
+        fi
+    
+    # 修复 Theme.kt 缺失的导入
+    - name: Fix imports in Theme.kt
+      run: |
+        THEME_FILE="FinanceAttendanceAndroid/app/src/main/java/com/financeattendance/ui/theme/Theme.kt"
+        if [ -f "$THEME_FILE" ] && ! grep -q "import androidx.compose.runtime.Composable" "$THEME_FILE"; then
+          sed -i '/^package /a\
+\
+import androidx.compose.runtime.Composable' "$THEME_FILE"
+        fi
+    
+    # 删除可能冲突的 PNG 图标
+    - name: Remove duplicate icon PNGs
       run: |
         cd FinanceAttendanceAndroid
-        THEME_FILE="app/src/main/java/com/financeattendance/ui/theme/Theme.kt"
-        if [ -f "$THEME_FILE" ] && ! grep -q "import androidx.compose.runtime.Composable" "$THEME_FILE"; then
-          sed -i '/^package /a\\
-          import androidx.compose.runtime.Composable' "$THEME_FILE"
-          echo "Added missing import"
-        fi
+        rm -f app/src/main/res/drawable/ic_launcher.png
+        rm -f app/src/main/res/drawable/ic_launcher_round.png || true
     
     - name: Build
       run: |
@@ -100,5 +112,5 @@ jobs:
         name: apk
         path: FinanceAttendanceAndroid/app/build/outputs/apk/release
     
-    - name: Clean build to avoid action/cache error
+    - name: Clean build
       run: rm -fr FinanceAttendanceAndroid/build
