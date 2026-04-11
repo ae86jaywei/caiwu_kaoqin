@@ -22,7 +22,13 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-    
+
+    - name: Fix SDK directory permissions
+      run: |
+        sudo chown -R $(whoami):$(whoami) /opt/android-sdk || true
+        # 确保 cmdline-tools 也可执行
+        sudo chmod -R u+w /opt/android-sdk
+
     - name: Build
       run: |
         echo "Work dir: $(pwd)"
