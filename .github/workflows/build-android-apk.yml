@@ -22,12 +22,17 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-
-    - name: Fix SDK directory permissions
+    
+    # 复制 SDK 到用户可写目录
+    - name: Setup writable Android SDK
       run: |
-        sudo chown -R $(whoami):$(whoami) /opt/android-sdk || true
-        # 确保 cmdline-tools 也可执行
-        sudo chmod -R u+w /opt/android-sdk
+        mkdir -p $HOME/android-sdk
+        cp -r /opt/android-sdk/* $HOME/android-sdk/
+        # 设置环境变量供后续步骤使用
+        echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        # 可选：将 cmdline-tools 加入 PATH
+        echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
     - name: Build
       run: |
