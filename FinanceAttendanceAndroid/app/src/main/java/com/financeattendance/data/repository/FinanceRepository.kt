@@ -2,6 +2,7 @@ package com.financeattendance.data.repository
 
 import com.financeattendance.data.dao.FinanceDao
 import com.financeattendance.data.entity.FinanceRecord
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FinanceRepository @Inject constructor(
@@ -10,7 +11,9 @@ class FinanceRepository @Inject constructor(
     suspend fun addRecord(record: FinanceRecord) = financeDao.insert(record)
     suspend fun updateRecord(record: FinanceRecord) = financeDao.update(record)
     suspend fun deleteRecord(record: FinanceRecord) = financeDao.delete(record)
-    suspend fun queryRecords(startDate: String, endDate: String, type: String) =
+    
+    fun queryRecords(startDate: String, endDate: String, type: String): Flow<List<FinanceRecord>> =
         financeDao.queryRecords(startDate, endDate, type)
-    suspend fun getRecordById(id: String) = financeDao.getRecordById(id)
+    
+    fun getRecordById(id: String): Flow<FinanceRecord?> = financeDao.getRecordById(id)
 }

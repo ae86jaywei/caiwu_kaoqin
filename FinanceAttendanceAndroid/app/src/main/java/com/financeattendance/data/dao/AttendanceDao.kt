@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.financeattendance.data.entity.AttendanceRecord
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AttendanceDao {
@@ -20,8 +21,8 @@ interface AttendanceDao {
     suspend fun delete(record: AttendanceRecord)
 
     @Query("SELECT * FROM attendance_record WHERE (:startDate = '' OR clock_date BETWEEN :startDate AND :endDate) AND (:personId = '' OR person_id = :personId) AND (:projectId = '' OR project_id = :projectId) ORDER BY clock_date DESC")
-    suspend fun queryRecords(startDate: String, endDate: String, personId: String, projectId: String): List<AttendanceRecord>
+    fun queryRecords(startDate: String, endDate: String, personId: String, projectId: String): Flow<List<AttendanceRecord>>
 
     @Query("SELECT * FROM attendance_record WHERE id = :id")
-    suspend fun getRecordById(id: String): AttendanceRecord?
+    fun getRecordById(id: String): Flow<AttendanceRecord?>
 }

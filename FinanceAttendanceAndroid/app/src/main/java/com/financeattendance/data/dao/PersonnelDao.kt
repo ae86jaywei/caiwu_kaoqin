@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.financeattendance.data.entity.Personnel
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PersonnelDao {
@@ -20,8 +21,8 @@ interface PersonnelDao {
     suspend fun delete(person: Personnel)
 
     @Query("SELECT * FROM personnel ORDER BY create_time DESC")
-    suspend fun queryAllPersons(): List<Personnel>
+    fun queryAllPersons(): Flow<List<Personnel>>
 
     @Query("SELECT * FROM personnel WHERE id = :id")
-    suspend fun getPersonById(id: String): Personnel?
+    fun getPersonById(id: String): Flow<Personnel?>
 }

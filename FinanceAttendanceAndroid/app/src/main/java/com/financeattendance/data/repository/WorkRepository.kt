@@ -2,6 +2,7 @@ package com.financeattendance.data.repository
 
 import com.financeattendance.data.dao.WorkDao
 import com.financeattendance.data.entity.WorkRecord
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class WorkRepository @Inject constructor(
@@ -10,7 +11,9 @@ class WorkRepository @Inject constructor(
     suspend fun addRecord(record: WorkRecord) = workDao.insert(record)
     suspend fun updateRecord(record: WorkRecord) = workDao.update(record)
     suspend fun deleteRecord(record: WorkRecord) = workDao.delete(record)
-    suspend fun queryRecords(personId: String?) =
+    
+    fun queryRecords(personId: String?): Flow<List<WorkRecord>> =
         workDao.queryRecords(personId ?: "")
-    suspend fun getRecordById(id: String) = workDao.getRecordById(id)
+    
+    fun getRecordById(id: String): Flow<WorkRecord?> = workDao.getRecordById(id)
 }

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.financeattendance.data.entity.WorkRecord
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WorkDao {
@@ -20,8 +21,8 @@ interface WorkDao {
     suspend fun delete(record: WorkRecord)
 
     @Query("SELECT * FROM work_record WHERE (:personId = '' OR person_id = :personId) ORDER BY work_date DESC")
-    suspend fun queryRecords(personId: String): List<WorkRecord>
+    fun queryRecords(personId: String): Flow<List<WorkRecord>>
 
     @Query("SELECT * FROM work_record WHERE id = :id")
-    suspend fun getRecordById(id: String): WorkRecord?
+    fun getRecordById(id: String): Flow<WorkRecord?>
 }

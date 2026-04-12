@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -27,10 +28,16 @@ class FinanceViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    init {
+        loadRecords("", "", "")
+    }
+
     fun loadRecords(startDate: String, endDate: String, type: String) {
         viewModelScope.launch {
             _isLoading.value = true
-            _records.value = repository.queryRecords(startDate, endDate, type)
+            repository.queryRecords(startDate, endDate, type).collect { recordsList ->
+                _records.value = recordsList
+            }
             _isLoading.value = false
         }
     }
@@ -42,21 +49,18 @@ class FinanceViewModel @Inject constructor(
                 createTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
             )
             repository.addRecord(newRecord)
-            loadRecords("", "", "")
         }
     }
 
     fun updateRecord(record: FinanceRecord) {
         viewModelScope.launch {
             repository.updateRecord(record)
-            loadRecords("", "", "")
         }
     }
 
     fun deleteRecord(record: FinanceRecord) {
         viewModelScope.launch {
             repository.deleteRecord(record)
-            loadRecords("", "", "")
         }
     }
 }

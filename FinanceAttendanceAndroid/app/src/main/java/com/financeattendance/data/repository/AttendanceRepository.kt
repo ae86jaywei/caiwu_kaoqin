@@ -2,6 +2,7 @@ package com.financeattendance.data.repository
 
 import com.financeattendance.data.dao.AttendanceDao
 import com.financeattendance.data.entity.AttendanceRecord
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AttendanceRepository @Inject constructor(
@@ -10,9 +11,12 @@ class AttendanceRepository @Inject constructor(
     suspend fun addRecord(record: AttendanceRecord) = attendanceDao.insert(record)
     suspend fun updateRecord(record: AttendanceRecord) = attendanceDao.update(record)
     suspend fun deleteRecord(record: AttendanceRecord) = attendanceDao.delete(record)
-    suspend fun queryRecords(startDate: String, endDate: String, personId: String, projectId: String) =
+    
+    fun queryRecords(startDate: String, endDate: String, personId: String, projectId: String): Flow<List<AttendanceRecord>> =
         attendanceDao.queryRecords(startDate, endDate, personId, projectId)
-    suspend fun getRecordById(id: String) = attendanceDao.getRecordById(id)
+    
+    fun getRecordById(id: String): Flow<AttendanceRecord?> = attendanceDao.getRecordById(id)
+    
     fun calculateWorkHours(record: AttendanceRecord): Double {
         return record.morningHours + record.afternoonHours + record.overtimeHours
     }

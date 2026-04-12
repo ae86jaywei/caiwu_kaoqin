@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.financeattendance.data.entity.FinanceRecord
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FinanceDao {
@@ -20,8 +21,8 @@ interface FinanceDao {
     suspend fun delete(record: FinanceRecord)
 
     @Query("SELECT * FROM finance_record WHERE date BETWEEN :startDate AND :endDate AND (:recordType = '' OR record_type = :recordType) ORDER BY date DESC")
-    suspend fun queryRecords(startDate: String, endDate: String, recordType: String): List<FinanceRecord>
+    fun queryRecords(startDate: String, endDate: String, recordType: String): Flow<List<FinanceRecord>>
 
     @Query("SELECT * FROM finance_record WHERE id = :id")
-    suspend fun getRecordById(id: String): FinanceRecord?
+    fun getRecordById(id: String): Flow<FinanceRecord?>
 }

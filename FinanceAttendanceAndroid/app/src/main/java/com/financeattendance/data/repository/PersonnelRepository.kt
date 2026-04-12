@@ -2,6 +2,7 @@ package com.financeattendance.data.repository
 
 import com.financeattendance.data.dao.PersonnelDao
 import com.financeattendance.data.entity.Personnel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class PersonnelRepository @Inject constructor(
@@ -10,6 +11,7 @@ class PersonnelRepository @Inject constructor(
     suspend fun addPerson(person: Personnel) = personnelDao.insert(person)
     suspend fun updatePerson(person: Personnel) = personnelDao.update(person)
     suspend fun deletePerson(person: Personnel) = personnelDao.delete(person)
-    suspend fun queryAllPersons() = personnelDao.queryAllPersons()
-    suspend fun getPersonById(id: String) = personnelDao.getPersonById(id)
+    
+    fun queryAllPersons(): Flow<List<Personnel>> = personnelDao.queryAllPersons()
+    fun getPersonById(id: String): Flow<Personnel?> = personnelDao.getPersonById(id)
 }

@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -25,10 +26,16 @@ class AttendanceViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    init {
+        loadRecords("", "", "", "")
+    }
+
     fun loadRecords(startDate: String, endDate: String, personId: String, projectId: String) {
         viewModelScope.launch {
             _isLoading.value = true
-            _records.value = repository.queryRecords(startDate, endDate, personId, projectId)
+            repository.queryRecords(startDate, endDate, personId, projectId).collect { recordsList ->
+                _records.value = recordsList
+            }
             _isLoading.value = false
         }
     }
@@ -38,8 +45,14 @@ class AttendanceViewModel @Inject constructor(
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             val now = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
 
-            val records = repository.queryRecords(today, today, personId, projectId ?: "")
-            if (records.isEmpty()) {
+            var existingRecord: AttendanceRecord? = null
+            repository.queryRecords(today, today, personId, projectId ?: "").collect { recordsList ->
+                if (recordsList.isNotEmpty()) {
+                    existingRecord = recordsList[0]
+                }
+            }
+
+            if (existingRecord == null) {
                 val record = AttendanceRecord(
                     id = UUID.randomUUID().toString(),
                     personId = personId,
@@ -61,7 +74,7 @@ class AttendanceViewModel @Inject constructor(
                 }
                 repository.addRecord(updatedRecord)
             } else {
-                val record = records[0]
+                val record = existingRecord!!
                 val updatedRecord = when (period) {
                     "morning" -> record.copy(morningStart = now)
                     "afternoon" -> record.copy(afternoonStart = now)
@@ -70,7 +83,6 @@ class AttendanceViewModel @Inject constructor(
                 }
                 repository.updateRecord(updatedRecord)
             }
-            loadRecords("", "", "", "")
         }
     }
 
@@ -79,9 +91,15 @@ class AttendanceViewModel @Inject constructor(
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             val now = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
 
-            val records = repository.queryRecords(today, today, personId, projectId ?: "")
-            if (records.isNotEmpty()) {
-                val record = records[0]
+            var existingRecord: AttendanceRecord? = null
+            repository.queryRecords(today, today, personId, projectId ?: "").collect { recordsList ->
+                if (recordsList.isNotEmpty()) {
+                    existingRecord = recordsList[0]
+                }
+            }
+
+            if (existingRecord != null) {
+                val record = existingRecord!!
                 val updatedRecord = when (period) {
                     "morning" -> {
                         if (record.morningStart.isNotEmpty()) {
@@ -105,7 +123,6 @@ class AttendanceViewModel @Inject constructor(
                 }
                 val totalHours = updatedRecord.morningHours + updatedRecord.afternoonHours + updatedRecord.overtimeHours
                 repository.updateRecord(updatedRecord.copy(totalHours = totalHours))
-                loadRecords("", "", "", "")
             }
         }
     }

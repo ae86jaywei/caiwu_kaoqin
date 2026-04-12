@@ -2,6 +2,7 @@ package com.financeattendance.data.repository
 
 import com.financeattendance.data.dao.ProjectDao
 import com.financeattendance.data.entity.Project
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ProjectRepository @Inject constructor(
@@ -10,6 +11,7 @@ class ProjectRepository @Inject constructor(
     suspend fun addProject(project: Project) = projectDao.insert(project)
     suspend fun updateProject(project: Project) = projectDao.update(project)
     suspend fun deleteProject(project: Project) = projectDao.delete(project)
-    suspend fun queryAllProjects() = projectDao.queryAllProjects()
-    suspend fun getProjectById(id: String) = projectDao.getProjectById(id)
+    
+    fun queryAllProjects(): Flow<List<Project>> = projectDao.queryAllProjects()
+    fun getProjectById(id: String): Flow<Project?> = projectDao.getProjectById(id)
 }

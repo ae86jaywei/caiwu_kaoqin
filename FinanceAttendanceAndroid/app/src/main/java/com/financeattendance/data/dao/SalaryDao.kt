@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.financeattendance.data.entity.SalaryRecord
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SalaryDao {
@@ -20,8 +21,8 @@ interface SalaryDao {
     suspend fun delete(record: SalaryRecord)
 
     @Query("SELECT * FROM salary_record WHERE (:personId = '' OR person_id = :personId) ORDER BY pay_date DESC")
-    suspend fun queryRecords(personId: String): List<SalaryRecord>
+    fun queryRecords(personId: String): Flow<List<SalaryRecord>>
 
     @Query("SELECT * FROM salary_record WHERE id = :id")
-    suspend fun getRecordById(id: String): SalaryRecord?
+    fun getRecordById(id: String): Flow<SalaryRecord?>
 }

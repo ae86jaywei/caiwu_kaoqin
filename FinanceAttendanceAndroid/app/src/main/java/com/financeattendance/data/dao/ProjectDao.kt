@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.financeattendance.data.entity.Project
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProjectDao {
@@ -20,8 +21,8 @@ interface ProjectDao {
     suspend fun delete(project: Project)
 
     @Query("SELECT * FROM project ORDER BY create_time DESC")
-    suspend fun queryAllProjects(): List<Project>
+    fun queryAllProjects(): Flow<List<Project>>
 
     @Query("SELECT * FROM project WHERE id = :id")
-    suspend fun getProjectById(id: String): Project?
+    fun getProjectById(id: String): Flow<Project?>
 }
