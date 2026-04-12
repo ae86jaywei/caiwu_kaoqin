@@ -8,9 +8,9 @@ import javax.inject.Inject
 class SalaryRepository @Inject constructor(
     private val salaryDao: SalaryDao
 ) {
-    suspend fun addRecord(record: SalaryRecord) = salaryDao.insert(record)
-    suspend fun updateRecord(record: SalaryRecord) = salaryDao.update(record)
-    suspend fun deleteRecord(record: SalaryRecord) = salaryDao.delete(record)
+    suspend fun addRecord(record: SalaryRecord): Long = salaryDao.insert(record)
+    suspend fun updateRecord(record: SalaryRecord): Int = salaryDao.update(record)
+    suspend fun deleteRecord(record: SalaryRecord): Int = salaryDao.delete(record)
     
     fun queryRecords(personId: String?): Flow<List<SalaryRecord>> =
         salaryDao.queryRecords(personId ?: "")

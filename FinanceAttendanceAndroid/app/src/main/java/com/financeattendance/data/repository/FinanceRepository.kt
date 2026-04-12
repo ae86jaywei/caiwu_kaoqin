@@ -8,9 +8,9 @@ import javax.inject.Inject
 class FinanceRepository @Inject constructor(
     private val financeDao: FinanceDao
 ) {
-    suspend fun addRecord(record: FinanceRecord) = financeDao.insert(record)
-    suspend fun updateRecord(record: FinanceRecord) = financeDao.update(record)
-    suspend fun deleteRecord(record: FinanceRecord) = financeDao.delete(record)
+    suspend fun addRecord(record: FinanceRecord): Long = financeDao.insert(record)
+    suspend fun updateRecord(record: FinanceRecord): Int = financeDao.update(record)
+    suspend fun deleteRecord(record: FinanceRecord): Int = financeDao.delete(record)
     
     fun queryRecords(startDate: String, endDate: String, type: String): Flow<List<FinanceRecord>> =
         financeDao.queryRecords(startDate, endDate, type)

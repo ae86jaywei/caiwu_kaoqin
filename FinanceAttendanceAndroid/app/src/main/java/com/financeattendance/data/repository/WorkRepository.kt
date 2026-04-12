@@ -8,9 +8,9 @@ import javax.inject.Inject
 class WorkRepository @Inject constructor(
     private val workDao: WorkDao
 ) {
-    suspend fun addRecord(record: WorkRecord) = workDao.insert(record)
-    suspend fun updateRecord(record: WorkRecord) = workDao.update(record)
-    suspend fun deleteRecord(record: WorkRecord) = workDao.delete(record)
+    suspend fun addRecord(record: WorkRecord): Long = workDao.insert(record)
+    suspend fun updateRecord(record: WorkRecord): Int = workDao.update(record)
+    suspend fun deleteRecord(record: WorkRecord): Int = workDao.delete(record)
     
     fun queryRecords(personId: String?): Flow<List<WorkRecord>> =
         workDao.queryRecords(personId ?: "")

@@ -8,9 +8,9 @@ import javax.inject.Inject
 class AttendanceRepository @Inject constructor(
     private val attendanceDao: AttendanceDao
 ) {
-    suspend fun addRecord(record: AttendanceRecord) = attendanceDao.insert(record)
-    suspend fun updateRecord(record: AttendanceRecord) = attendanceDao.update(record)
-    suspend fun deleteRecord(record: AttendanceRecord) = attendanceDao.delete(record)
+    suspend fun addRecord(record: AttendanceRecord): Long = attendanceDao.insert(record)
+    suspend fun updateRecord(record: AttendanceRecord): Int = attendanceDao.update(record)
+    suspend fun deleteRecord(record: AttendanceRecord): Int = attendanceDao.delete(record)
     
     fun queryRecords(startDate: String, endDate: String, personId: String, projectId: String): Flow<List<AttendanceRecord>> =
         attendanceDao.queryRecords(startDate, endDate, personId, projectId)

@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AttendanceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(record: AttendanceRecord)
+    suspend fun insert(record: AttendanceRecord): Long
 
     @Update
-    suspend fun update(record: AttendanceRecord)
+    suspend fun update(record: AttendanceRecord): Int
 
     @Delete
-    suspend fun delete(record: AttendanceRecord)
+    suspend fun delete(record: AttendanceRecord): Int
 
     @Query("SELECT * FROM attendance_record WHERE (:startDate = '' OR clock_date BETWEEN :startDate AND :endDate) AND (:personId = '' OR person_id = :personId) AND (:projectId = '' OR project_id = :projectId) ORDER BY clock_date DESC")
     fun queryRecords(startDate: String, endDate: String, personId: String, projectId: String): Flow<List<AttendanceRecord>>
