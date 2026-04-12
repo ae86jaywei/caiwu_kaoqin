@@ -16,14 +16,6 @@ import com.financeattendance.data.repository.SalaryRepository
 import com.financeattendance.data.repository.WorkRepository
 import com.financeattendance.domain.service.ProjectStatsService
 import com.financeattendance.viewmodel.AttendanceViewModel
-import com.financeattendance.data.repository.AttendanceRepository
-import com.financeattendance.data.repository.FinanceRepository
-import com.financeattendance.data.repository.PersonnelRepository
-import com.financeattendance.data.repository.ProjectRepository
-import com.financeattendance.data.repository.SalaryRepository
-import com.financeattendance.data.repository.WorkRepository
-import com.financeattendance.domain.service.ProjectStatsService
-import com.financeattendance.viewmodel.AttendanceViewModel
 import com.financeattendance.viewmodel.FinanceViewModel
 import com.financeattendance.viewmodel.PersonnelViewModel
 import com.financeattendance.viewmodel.ProjectViewModel
