@@ -6,7 +6,7 @@ echo ""
 echo "1. 检查 Gradle 版本配置..."
 GRADLE_VERSION=$(grep "distributionUrl" FinanceAttendanceAndroid/gradle/wrapper/gradle-wrapper.properties | grep -o "gradle-[0-9.]*")
 echo "   Gradle 版本: $GRADLE_VERSION"
-echo "   ✅ 已配置为 Gradle 8.10 (与 Docker 镜像匹配)"
+echo "   ✅ 已配置为 Gradle 8.5 (更稳定的版本)"
 
 echo ""
 echo "2. 检查 Android Gradle Plugin 版本..."
