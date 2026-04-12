@@ -10,7 +10,7 @@ import androidx.compose.runtime.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.Clock
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Note
 import androidx.compose.material.icons.filled.Person
@@ -28,7 +28,7 @@ fun HomeScreen() {
     val items = listOf("财务", "考勤", "工资", "工作记录", "人员", "项目")
     val icons = listOf(
         Icons.Filled.AccountBalance,
-        Icons.Filled.Clock,
+        Icons.Filled.Schedule,
         Icons.Filled.Money,
         Icons.Filled.Note,
         Icons.Filled.Person,

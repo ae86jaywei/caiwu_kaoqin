@@ -131,7 +131,7 @@ class AttendanceViewModel @Inject constructor(
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val startTime = sdf.parse(start)?.time ?: 0
         val endTime = sdf.parse(end)?.time ?: 0
-        val hours = (endTime - startTime) / (1000 * 60 * 60)
+        val hours = (endTime - startTime).toDouble() / (1000 * 60 * 60)
         return Math.round(hours * 100) / 100.0
     }
 }

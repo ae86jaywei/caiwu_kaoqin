@@ -27,7 +27,7 @@ import com.financeattendance.data.entity.WorkRecord
         Project::class
     ],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun financeDao(): FinanceDao
