@@ -102,26 +102,26 @@ class AttendanceViewModel @Inject constructor(
                 val record = existingRecord!!
                 val updatedRecord = when (period) {
                     "morning" -> {
-                        if (record.morningStart.isNotEmpty()) {
-                            val hours = calculateHours(record.morningStart, now)
+                        record.morningStart?.takeIf { it.isNotEmpty() }?.let { start ->
+                            val hours = calculateHours(start, now)
                             record.copy(morningEnd = now, morningHours = hours)
-                        } else record
+                        } ?: record
                     }
                     "afternoon" -> {
-                        if (record.afternoonStart.isNotEmpty()) {
-                            val hours = calculateHours(record.afternoonStart, now)
+                        record.afternoonStart?.takeIf { it.isNotEmpty() }?.let { start ->
+                            val hours = calculateHours(start, now)
                             record.copy(afternoonEnd = now, afternoonHours = hours)
-                        } else record
+                        } ?: record
                     }
                     "overtime" -> {
-                        if (record.overtimeStart.isNotEmpty()) {
-                            val hours = calculateHours(record.overtimeStart, now)
+                        record.overtimeStart?.takeIf { it.isNotEmpty() }?.let { start ->
+                            val hours = calculateHours(start, now)
                             record.copy(overtimeEnd = now, overtimeHours = hours)
-                        } else record
+                        } ?: record
                     }
                     else -> record
                 }
-                val totalHours = updatedRecord.morningHours + updatedRecord.afternoonHours + updatedRecord.overtimeHours
+                val totalHours: Double = updatedRecord.morningHours + updatedRecord.afternoonHours + updatedRecord.overtimeHours
                 repository.updateRecord(updatedRecord.copy(totalHours = totalHours))
             }
         }

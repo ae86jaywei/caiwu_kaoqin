@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -28,7 +29,9 @@ class PersonnelViewModel @Inject constructor(
     fun loadPersons() {
         viewModelScope.launch {
             _isLoading.value = true
-            _persons.value = repository.queryAllPersons()
+            repository.queryAllPersons().collect { personsList ->
+                _persons.value = personsList
+            }
             _isLoading.value = false
         }
     }

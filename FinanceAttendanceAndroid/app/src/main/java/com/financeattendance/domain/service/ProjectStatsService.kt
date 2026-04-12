@@ -6,6 +6,7 @@ import com.financeattendance.data.repository.AttendanceRepository
 import com.financeattendance.data.repository.FinanceRepository
 import com.financeattendance.data.repository.PersonnelRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -17,13 +18,13 @@ class ProjectStatsService @Inject constructor(
 
     suspend fun getProjectPersonStats(projectId: String): List<ProjectPersonStats> {
         return withContext(Dispatchers.IO) {
-            val records = attendanceRepository.queryRecords("", "", "", projectId)
+            val records = attendanceRepository.queryRecords("", "", "", projectId).first()
             val statsMap = HashMap<String, ProjectPersonStats>()
 
             for (record in records) {
                 val currentStats = statsMap[record.personId]
                 if (currentStats == null) {
-                    val person = personnelRepository.getPersonById(record.personId)
+                    val person = personnelRepository.getPersonById(record.personId).first()
                     statsMap[record.personId] = ProjectPersonStats(
                         personId = record.personId,
                         personName = person?.name ?: record.personId,
@@ -43,7 +44,7 @@ class ProjectStatsService @Inject constructor(
 
     suspend fun getProjectExpenseStats(projectId: String): ProjectExpenseStats {
         return withContext(Dispatchers.IO) {
-            val records = financeRepository.queryRecords("", "", "")
+            val records = financeRepository.queryRecords("", "", "").first()
             var materialCost = 0.0
             var transportCost = 0.0
             var officeCost = 0.0
