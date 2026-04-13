@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ProjectDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(project: Project): Long
+    fun insert(project: Project): Long
 
     @Update
-    suspend fun update(project: Project): Int
+    fun update(project: Project): Int
 
     @Delete
-    suspend fun delete(project: Project): Int
+    fun delete(project: Project): Int
 
     @Query("SELECT * FROM project ORDER BY create_time DESC")
     fun queryAllProjects(): Flow<List<Project>>
