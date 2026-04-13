@@ -9,7 +9,7 @@ android {
     buildToolsVersion "34.0.0"
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
 
     defaultConfig {
