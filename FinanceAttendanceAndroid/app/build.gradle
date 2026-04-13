@@ -9,7 +9,7 @@ android {
     buildToolsVersion "34.0.0"
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.12"
+        kotlinCompilerExtensionVersion = "1.6.0"
     }
 
     defaultConfig {
@@ -37,7 +37,6 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
-        viewBinding = true
         compose = true
     }
     

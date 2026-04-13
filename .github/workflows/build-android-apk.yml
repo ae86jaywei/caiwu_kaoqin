@@ -54,11 +54,11 @@ jobs:
         
         # 设置 Compose 编译器版本（兼容 Kotlin 1.9.22）
         if grep -q "composeOptions {" "$APP_GRADLE"; then
-          sed -i 's/kotlinCompilerExtensionVersion = .*/kotlinCompilerExtensionVersion = "1.5.10"/' "$APP_GRADLE"
+          sed -i 's/kotlinCompilerExtensionVersion = .*/kotlinCompilerExtensionVersion = "1.6.0"/' "$APP_GRADLE"
         else
           sed -i '/android {/a\
         composeOptions {\
-            kotlinCompilerExtensionVersion = "1.5.10"\
+            kotlinCompilerExtensionVersion = "1.6.0"\
         }' "$APP_GRADLE"
         fi
     
@@ -69,7 +69,7 @@ jobs:
         if ! grep -q "compose-bom" "$APP_GRADLE"; then
           sed -i '/dependencies {/a\
           // Compose BOM and libraries\
-          implementation platform("androidx.compose:compose-bom:2024.02.00")\
+          implementation platform("androidx.compose:compose-bom:2024.08.00")\
           implementation "androidx.compose.ui:ui"\
           implementation "androidx.compose.material3:material3"\
           implementation "androidx.compose.ui:ui-tooling-preview"\
@@ -84,14 +84,7 @@ jobs:
           sed -i '/^package /a\\
           import androidx.compose.runtime.Composable' "$THEME_FILE"
         fi
-    
-    # 删除可能冲突的 PNG 图标
-    - name: Remove duplicate icon PNGs
-      run: |
-        cd FinanceAttendanceAndroid
-        rm -f app/src/main/res/drawable/ic_launcher.png
-        rm -f app/src/main/res/drawable/ic_launcher_round.png || true
-    
+
     - name: Build
       run: |
         echo "Work dir: $(pwd)"

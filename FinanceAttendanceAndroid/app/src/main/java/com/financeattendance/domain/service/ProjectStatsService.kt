@@ -27,7 +27,7 @@ class ProjectStatsService @Inject constructor(
                     val person = personnelRepository.getPersonById(record.personId).first()
                     statsMap[record.personId] = ProjectPersonStats(
                         personId = record.personId,
-                        personName = person?.name ?: record.personId,
+                        personName = person?.name?.takeIf { it.isNotBlank() } ?: record.personId,
                         workDays = 1,
                         totalHours = record.totalHours
                     )

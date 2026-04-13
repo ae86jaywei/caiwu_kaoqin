@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SalaryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(record: SalaryRecord): Long
+    suspend fun insert(record: SalaryRecord): Long
 
     @Update
-    fun update(record: SalaryRecord): Int
+    suspend fun update(record: SalaryRecord): Int
 
     @Delete
-    fun delete(record: SalaryRecord): Int
+    suspend fun delete(record: SalaryRecord): Int
 
     @Query("SELECT * FROM salary_record WHERE (:personId = '' OR person_id = :personId) ORDER BY pay_date DESC")
     fun queryRecords(personId: String): Flow<List<SalaryRecord>>

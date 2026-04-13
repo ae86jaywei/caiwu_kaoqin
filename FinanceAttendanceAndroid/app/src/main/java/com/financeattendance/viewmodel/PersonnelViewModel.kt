@@ -25,39 +25,63 @@ class PersonnelViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     fun loadPersons() {
         viewModelScope.launch {
-            _isLoading.value = true
-            repository.queryAllPersons().collect { personsList ->
-                _persons.value = personsList
+            try {
+                _isLoading.value = true
+                _errorMessage.value = null
+                repository.queryAllPersons().collect { personsList ->
+                    _persons.value = personsList
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "加载人员失败: ${e.message}"
+            } finally {
+                _isLoading.value = false
             }
-            _isLoading.value = false
         }
     }
 
     fun addPerson(person: Personnel) {
         viewModelScope.launch {
-            val newPerson = person.copy(
-                id = UUID.randomUUID().toString(),
-                createTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-            )
-            repository.addPerson(newPerson)
-            loadPersons()
+            try {
+                _errorMessage.value = null
+                val newPerson = person.copy(
+                    id = UUID.randomUUID().toString(),
+                    createTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+                )
+                repository.addPerson(newPerson)
+                loadPersons()
+            } catch (e: Exception) {
+                _errorMessage.value = "添加人员失败: ${e.message}"
+            }
         }
     }
 
     fun updatePerson(person: Personnel) {
         viewModelScope.launch {
-            repository.updatePerson(person)
-            loadPersons()
+            try {
+                _errorMessage.value = null
+                repository.updatePerson(person)
+                loadPersons()
+            } catch (e: Exception) {
+                _errorMessage.value = "更新人员失败: ${e.message}"
+            }
         }
     }
 
     fun deletePerson(person: Personnel) {
         viewModelScope.launch {
-            repository.deletePerson(person)
-            loadPersons()
+            try {
+                _errorMessage.value = null
+                repository.deletePerson(person)
+                loadPersons()
+            } catch (e: Exception) {
+                _errorMessage.value = "删除人员失败: ${e.message}"
+            }
         }
     }
 }

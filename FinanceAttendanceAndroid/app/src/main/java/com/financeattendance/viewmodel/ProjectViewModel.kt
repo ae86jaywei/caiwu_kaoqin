@@ -38,39 +38,63 @@ class ProjectViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     fun loadProjects() {
         viewModelScope.launch {
-            _isLoading.value = true
-            repository.queryAllProjects().collect { projectsList ->
-                _projects.value = projectsList
+            try {
+                _isLoading.value = true
+                _errorMessage.value = null
+                repository.queryAllProjects().collect { projectsList ->
+                    _projects.value = projectsList
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "加载项目失败: ${e.message}"
+            } finally {
+                _isLoading.value = false
             }
-            _isLoading.value = false
         }
     }
 
     fun addProject(project: Project) {
         viewModelScope.launch {
-            val newProject = project.copy(
-                id = UUID.randomUUID().toString(),
-                createTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-            )
-            repository.addProject(newProject)
-            loadProjects()
+            try {
+                _errorMessage.value = null
+                val newProject = project.copy(
+                    id = UUID.randomUUID().toString(),
+                    createTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+                )
+                repository.addProject(newProject)
+                loadProjects()
+            } catch (e: Exception) {
+                _errorMessage.value = "添加项目失败: ${e.message}"
+            }
         }
     }
 
     fun updateProject(project: Project) {
         viewModelScope.launch {
-            repository.updateProject(project)
-            loadProjects()
+            try {
+                _errorMessage.value = null
+                repository.updateProject(project)
+                loadProjects()
+            } catch (e: Exception) {
+                _errorMessage.value = "更新项目失败: ${e.message}"
+            }
         }
     }
 
     fun deleteProject(project: Project) {
         viewModelScope.launch {
-            repository.deleteProject(project)
-            loadProjects()
+            try {
+                _errorMessage.value = null
+                repository.deleteProject(project)
+                loadProjects()
+            } catch (e: Exception) {
+                _errorMessage.value = "删除项目失败: ${e.message}"
+            }
         }
     }
 
@@ -81,8 +105,13 @@ class ProjectViewModel @Inject constructor(
 
     private fun loadProjectStats(projectId: String) {
         viewModelScope.launch {
-            _personStats.value = projectStatsService.getProjectPersonStats(projectId)
-            _expenseStats.value = projectStatsService.getProjectExpenseStats(projectId)
+            try {
+                _errorMessage.value = null
+                _personStats.value = projectStatsService.getProjectPersonStats(projectId)
+                _expenseStats.value = projectStatsService.getProjectExpenseStats(projectId)
+            } catch (e: Exception) {
+                _errorMessage.value = "加载项目统计失败: ${e.message}"
+            }
         }
     }
 }

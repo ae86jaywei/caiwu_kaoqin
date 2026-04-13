@@ -3,9 +3,11 @@ package com.financeattendance.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(tableName = "project")
+@Serializable
 data class Project(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "name") val name: String,
@@ -20,6 +22,7 @@ data class Project(
     @ColumnInfo(name = "create_time") val createTime: String
 )
 
+@Serializable
 data class ProjectPersonStats(
     val personId: String,
     val personName: String,
@@ -27,6 +30,7 @@ data class ProjectPersonStats(
     val totalHours: Double
 )
 
+@Serializable
 data class ProjectExpenseStats(
     val materialCost: Double,
     val transportCost: Double,

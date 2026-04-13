@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FinanceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(record: FinanceRecord): Long
+    suspend fun insert(record: FinanceRecord): Long
 
     @Update
-    fun update(record: FinanceRecord): Int
+    suspend fun update(record: FinanceRecord): Int
 
     @Delete
-    fun delete(record: FinanceRecord): Int
+    suspend fun delete(record: FinanceRecord): Int
 
     @Query("SELECT * FROM finance_record WHERE date BETWEEN :startDate AND :endDate AND (:recordType = '' OR record_type = :recordType) ORDER BY date DESC")
     fun queryRecords(startDate: String, endDate: String, recordType: String): Flow<List<FinanceRecord>>

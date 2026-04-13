@@ -27,6 +27,9 @@ class FinanceViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     init {
         loadRecords("", "", "")
@@ -34,33 +37,57 @@ class FinanceViewModel @Inject constructor(
 
     fun loadRecords(startDate: String, endDate: String, type: String) {
         viewModelScope.launch {
-            _isLoading.value = true
-            repository.queryRecords(startDate, endDate, type).collect { recordsList ->
-                _records.value = recordsList
+            try {
+                _isLoading.value = true
+                _errorMessage.value = null
+                repository.queryRecords(startDate, endDate, type).collect { recordsList ->
+                    _records.value = recordsList
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "加载财务记录失败: ${e.message}"
+            } finally {
+                _isLoading.value = false
             }
-            _isLoading.value = false
         }
     }
 
     fun addRecord(record: FinanceRecord) {
         viewModelScope.launch {
-            val newRecord = record.copy(
-                id = UUID.randomUUID().toString(),
-                createTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-            )
-            repository.addRecord(newRecord)
+            try {
+                _errorMessage.value = null
+                val newRecord = record.copy(
+                    id = UUID.randomUUID().toString(),
+                    createTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+                )
+                repository.addRecord(newRecord)
+                loadRecords("", "", "")
+            } catch (e: Exception) {
+                _errorMessage.value = "添加财务记录失败: ${e.message}"
+            }
         }
     }
 
     fun updateRecord(record: FinanceRecord) {
         viewModelScope.launch {
-            repository.updateRecord(record)
+            try {
+                _errorMessage.value = null
+                repository.updateRecord(record)
+                loadRecords("", "", "")
+            } catch (e: Exception) {
+                _errorMessage.value = "更新财务记录失败: ${e.message}"
+            }
         }
     }
 
     fun deleteRecord(record: FinanceRecord) {
         viewModelScope.launch {
-            repository.deleteRecord(record)
+            try {
+                _errorMessage.value = null
+                repository.deleteRecord(record)
+                loadRecords("", "", "")
+            } catch (e: Exception) {
+                _errorMessage.value = "删除财务记录失败: ${e.message}"
+            }
         }
     }
 }

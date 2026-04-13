@@ -3,9 +3,11 @@ package com.financeattendance.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(tableName = "work_record")
+@Serializable
 data class WorkRecord(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "person_id") val personId: String,
