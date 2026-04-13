@@ -10,10 +10,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Note
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Money
-import androidx.compose.material.icons.filled.Note
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.Icon
@@ -31,7 +31,7 @@ fun HomeScreen() {
         Icons.Filled.AccountBalance,
         Icons.Filled.Schedule,
         Icons.Filled.Money,
-        Icons.Filled.Note,
+        Icons.AutoMirrored.Filled.Note,
         Icons.Filled.Person,
         Icons.Filled.WorkspacePremium
     )
@@ -49,7 +49,7 @@ fun HomeScreen() {
                 }
             }
         }
-    ) { innerPadding ->
+    ) { _ ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()

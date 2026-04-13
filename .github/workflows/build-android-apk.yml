@@ -11,6 +11,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: ghcr.io/ae86jaywei/android-build-docker:latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
     - uses: actions/checkout@v4
@@ -98,11 +100,17 @@ jobs:
         chmod +x gradlew
         ./gradlew clean assembleRelease
 
-    - name: Archive apk
-      uses: actions/upload-artifact@v4
+    - name: Create Release and Upload APK
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+      uses: softprops/action-gh-release@v1
       with:
-        name: apk
-        path: FinanceAttendanceAndroid/app/build/outputs/apk/release
+        tag_name: release-${{ github.sha }}
+        name: Release ${{ github.sha }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+        files: |
+          FinanceAttendanceAndroid/app/build/outputs/apk/release/*.apk
     
     - name: Clean build
       run: rm -fr FinanceAttendanceAndroid/build
