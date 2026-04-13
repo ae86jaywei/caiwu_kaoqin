@@ -41,6 +41,33 @@ else
     echo "  - RELEASE_STORE_PASSWORD: 密钥库密码"
     echo "  - RELEASE_KEY_ALIAS: 密钥别名"
     echo "  - RELEASE_KEY_PASSWORD: 密钥密码"
+    
+    # 确保调试密钥库存在
+    DEBUG_KEYSTORE_PATH="$HOME/.android/debug.keystore"
+    if [ ! -f "$DEBUG_KEYSTORE_PATH" ]; then
+        echo "调试密钥库不存在，正在创建: $DEBUG_KEYSTORE_PATH"
+        mkdir -p "$(dirname "$DEBUG_KEYSTORE_PATH")"
+        
+        # 使用keytool生成调试密钥库
+        keytool -genkey -v \
+            -keystore "$DEBUG_KEYSTORE_PATH" \
+            -alias androiddebugkey \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass android \
+            -keypass android \
+            -dname "CN=Android Debug,O=Android,C=US"
+        
+        if [ -f "$DEBUG_KEYSTORE_PATH" ]; then
+            echo "调试密钥库创建成功"
+        else
+            echo "错误：无法创建调试密钥库"
+            exit 1
+        fi
+    else
+        echo "调试密钥库已存在: $DEBUG_KEYSTORE_PATH"
+    fi
 fi
 
 echo "签名配置检查完成"
