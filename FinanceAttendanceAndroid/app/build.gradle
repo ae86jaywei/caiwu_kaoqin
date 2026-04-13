@@ -68,10 +68,10 @@ android {
     buildFeatures {
         compose = true
     }
-    
-    // 启用Hilt
-    kotlin {
-        jvmToolchain(17)
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
     }
 }
 
@@ -127,6 +127,67 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
+
+// 创建调试密钥库的任务
+task createDebugKeystore {
+    doLast {
+        def debugKeystore = file("${System.getProperty('user.home')}/.android/debug.keystore")
+        if (!debugKeystore.exists()) {
+            println "调试密钥库不存在，正在创建: ${debugKeystore.absolutePath}"
+            
+            // 创建.android目录
+            def androidDir = debugKeystore.parentFile
+            if (!androidDir.exists()) {
+                androidDir.mkdirs()
+                println "创建目录: ${androidDir.absolutePath}"
+            }
+            
+            // 使用keytool生成调试密钥库
+            def keytool = "${System.getProperty('java.home')}/bin/keytool"
+            if (!file(keytool).exists()) {
+                // 如果在JRE中找不到keytool，尝试在JDK中查找
+                keytool = "${System.getProperty('java.home')}/../bin/keytool"
+            }
+            
+            println "使用keytool: $keytool"
+            
+            def command = [
+                keytool,
+                "-genkey",
+                "-v",
+                "-keystore", debugKeystore.absolutePath,
+                "-alias", "androiddebugkey",
+                "-keyalg", "RSA",
+                "-keysize", "2048",
+                "-validity", "10000",
+                "-storepass", "android",
+                "-keypass", "android",
+                "-dname", "CN=Android Debug,O=Android,C=US"
+            ]
+            
+            println "执行命令: ${command.join(' ')}"
+            
+            def process = command.execute()
+            process.waitFor()
+            
+            if (process.exitValue() == 0) {
+                println "调试密钥库创建成功"
+            } else {
+                println "错误: keytool执行失败，退出码: ${process.exitValue()}"
+                println "stderr: ${process.err.text}"
+            }
+        } else {
+            println "调试密钥库已存在: ${debugKeystore.absolutePath}"
+        }
+    }
+}
+
+// 确保在验证签名前先创建调试密钥库
+tasks.whenTaskAdded { task ->
+    if (task.name.startsWith('validateSigning')) {
+        task.dependsOn createDebugKeystore
+    }
 }
 
 // 签名配置说明：

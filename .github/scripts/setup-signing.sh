@@ -5,7 +5,7 @@
 
 set -e
 
-echo "检查签名配置..."
+echo "========== 开始检查签名配置 =========="
 
 # 检查所有必需的签名secrets是否存在
 if [ -n "$RELEASE_STORE_FILE_BASE64" ] && \
@@ -44,11 +44,26 @@ else
     
     # 确保调试密钥库存在
     DEBUG_KEYSTORE_PATH="$HOME/.android/debug.keystore"
+    echo "检查调试密钥库: $DEBUG_KEYSTORE_PATH"
+    
+    # 检查keytool是否可用
+    if ! command -v keytool &> /dev/null; then
+        echo "错误：keytool命令不可用，请确保JDK已正确安装"
+        exit 1
+    fi
+    
+    echo "keytool路径: $(which keytool)"
+    echo "当前用户: $(whoami)"
+    echo "当前目录: $(pwd)"
+    
     if [ ! -f "$DEBUG_KEYSTORE_PATH" ]; then
-        echo "调试密钥库不存在，正在创建: $DEBUG_KEYSTORE_PATH"
+        echo "调试密钥库不存在，正在创建..."
         mkdir -p "$(dirname "$DEBUG_KEYSTORE_PATH")"
+        echo "创建目录: $(dirname "$DEBUG_KEYSTORE_PATH")"
+        ls -la "$(dirname "$DEBUG_KEYSTORE_PATH")"
         
         # 使用keytool生成调试密钥库
+        echo "开始生成调试密钥库..."
         keytool -genkey -v \
             -keystore "$DEBUG_KEYSTORE_PATH" \
             -alias androiddebugkey \
@@ -57,17 +72,22 @@ else
             -validity 10000 \
             -storepass android \
             -keypass android \
-            -dname "CN=Android Debug,O=Android,C=US"
+            -dname "CN=Android Debug,O=Android,C=US" 2>&1
         
-        if [ -f "$DEBUG_KEYSTORE_PATH" ]; then
+        KEYTOOL_EXIT_CODE=$?
+        echo "keytool退出码: $KEYTOOL_EXIT_CODE"
+        
+        if [ $KEYTOOL_EXIT_CODE -eq 0 ] && [ -f "$DEBUG_KEYSTORE_PATH" ]; then
             echo "调试密钥库创建成功"
+            ls -la "$DEBUG_KEYSTORE_PATH"
         else
             echo "错误：无法创建调试密钥库"
             exit 1
         fi
     else
-        echo "调试密钥库已存在: $DEBUG_KEYSTORE_PATH"
+        echo "调试密钥库已存在"
+        ls -la "$DEBUG_KEYSTORE_PATH"
     fi
 fi
 
-echo "签名配置检查完成"
+echo "========== 签名配置检查完成 =========="
