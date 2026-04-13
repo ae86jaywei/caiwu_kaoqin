@@ -94,7 +94,7 @@ jobs:
     # - RELEASE_KEY_ALIAS: 密钥别名
     # - RELEASE_KEY_PASSWORD: 密钥密码
     - name: Setup signing (if secrets available)
-      if: ${{ secrets.RELEASE_STORE_FILE_BASE64 != '' }}
+      if: ${{ secrets.RELEASE_STORE_FILE_BASE64 && secrets.RELEASE_STORE_PASSWORD && secrets.RELEASE_KEY_ALIAS && secrets.RELEASE_KEY_PASSWORD }}
       run: |
         # 解码base64编码的密钥库文件
         echo "${{ secrets.RELEASE_STORE_FILE_BASE64 }}" | base64 -d > release-key.keystore
