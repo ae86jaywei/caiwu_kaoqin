@@ -93,19 +93,15 @@ jobs:
     # - RELEASE_STORE_PASSWORD: 密钥库密码
     # - RELEASE_KEY_ALIAS: 密钥别名
     # - RELEASE_KEY_PASSWORD: 密钥密码
-    - name: Setup signing (if secrets available)
-      if: ${{ secrets.RELEASE_STORE_FILE_BASE64 && secrets.RELEASE_STORE_PASSWORD && secrets.RELEASE_KEY_ALIAS && secrets.RELEASE_KEY_PASSWORD }}
+    - name: Setup signing
+      env:
+        RELEASE_STORE_FILE_BASE64: ${{ secrets.RELEASE_STORE_FILE_BASE64 }}
+        RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+        RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+        RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
       run: |
-        # 解码base64编码的密钥库文件
-        echo "${{ secrets.RELEASE_STORE_FILE_BASE64 }}" | base64 -d > release-key.keystore
-        
-        # 设置环境变量供Gradle使用
-        echo "RELEASE_STORE_FILE=$(pwd)/release-key.keystore" >> $GITHUB_ENV
-        echo "RELEASE_STORE_PASSWORD=${{ secrets.RELEASE_STORE_PASSWORD }}" >> $GITHUB_ENV
-        echo "RELEASE_KEY_ALIAS=${{ secrets.RELEASE_KEY_ALIAS }}" >> $GITHUB_ENV
-        echo "RELEASE_KEY_PASSWORD=${{ secrets.RELEASE_KEY_PASSWORD }}" >> $GITHUB_ENV
-        
-        echo "签名环境变量已设置"
+        chmod +x .github/scripts/setup-signing.sh
+        .github/scripts/setup-signing.sh
 
     - name: Build
       run: |
