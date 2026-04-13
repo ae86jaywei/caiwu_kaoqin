@@ -54,11 +54,11 @@ jobs:
         
         # 设置 Compose 编译器版本（兼容 Kotlin 1.9.22）
         if grep -q "composeOptions {" "$APP_GRADLE"; then
-          sed -i 's/kotlinCompilerExtensionVersion = .*/kotlinCompilerExtensionVersion = "1.6.0"/' "$APP_GRADLE"
+          sed -i 's/kotlinCompilerExtensionVersion = .*/kotlinCompilerExtensionVersion = "1.5.14"/' "$APP_GRADLE"
         else
           sed -i '/android {/a\
         composeOptions {\
-            kotlinCompilerExtensionVersion = "1.6.0"\
+            kotlinCompilerExtensionVersion = "1.5.14"\
         }' "$APP_GRADLE"
         fi
     
