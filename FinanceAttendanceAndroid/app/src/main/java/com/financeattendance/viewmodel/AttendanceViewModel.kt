@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -74,7 +75,7 @@ class AttendanceViewModel @Inject constructor(
                         "custom" -> {
                             if (customStart != null && customEnd != null) {
                                 val hours = calculateHours(customStart, customEnd)
-                                record.copy(customPeriods = "[{\"start\":\"$customStart\",\"end\":\"$customEnd\",\"hours\":$hours}]".also { it })
+                                record.copy(customPeriods = "[{\"start\":\"$customStart\",\"end\":\"$customEnd\",\"hours\":$hours}]")
                             } else record
                         }
                         else -> record
@@ -108,19 +109,19 @@ class AttendanceViewModel @Inject constructor(
                 if (existingRecord != null) {
                     val updatedRecord = when (period) {
                         "morning" -> {
-                            existingRecord.morningStart?.takeIf { it.isNotEmpty() }?.let { start ->
+                            existingRecord.morningStart?.takeIf { !it.isNullOrEmpty() }?.let { start ->
                                 val hours = calculateHours(start, now)
                                 existingRecord.copy(morningEnd = now, morningHours = hours)
                             } ?: existingRecord
                         }
                         "afternoon" -> {
-                            existingRecord.afternoonStart?.takeIf { it.isNotEmpty() }?.let { start ->
+                            existingRecord.afternoonStart?.takeIf { !it.isNullOrEmpty() }?.let { start ->
                                 val hours = calculateHours(start, now)
                                 existingRecord.copy(afternoonEnd = now, afternoonHours = hours)
                             } ?: existingRecord
                         }
                         "overtime" -> {
-                            existingRecord.overtimeStart?.takeIf { it.isNotEmpty() }?.let { start ->
+                            existingRecord.overtimeStart?.takeIf { !it.isNullOrEmpty() }?.let { start ->
                                 val hours = calculateHours(start, now)
                                 existingRecord.copy(overtimeEnd = now, overtimeHours = hours)
                             } ?: existingRecord
