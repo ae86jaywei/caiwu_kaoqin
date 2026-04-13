@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
@@ -25,7 +25,7 @@ import com.financeattendance.ui.theme.FinanceAttendanceTheme
 
 @Composable
 fun HomeScreen() {
-    var selectedItem by rememberSaveable { mutableStateOf(0) }
+    var selectedItem by remember { mutableStateOf(0) }
     val items = listOf("财务", "考勤", "工资", "工作记录", "人员", "项目")
     val icons = listOf(
         Icons.Filled.AccountBalance,
