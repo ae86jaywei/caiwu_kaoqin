@@ -19,13 +19,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.1
     
-    - name: Create Gradle cache directory
-      run: mkdir -p ~/.gradle/caches
-      
-    - uses: actions/cache@v4.0.2
+    - uses: actions/cache@v4
+      id: gradle-cache
       with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
     
