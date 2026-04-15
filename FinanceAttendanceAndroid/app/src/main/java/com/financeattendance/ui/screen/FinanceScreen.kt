@@ -52,11 +52,10 @@ fun FinanceScreen(
                 Text("添加财务记录")
             }
             
-            // 简单显示记录列表
             if (records.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = 16.dp)) {
                     records.take(5).forEach { record ->
-                        Text("- ${record.description ?: "无描述"} (${record.amount}元)")
+                        Text("- ${record.recordType}: ${record.amount}元 (${record.date})")
                     }
                     if (records.size > 5) {
                         Text("... 还有${records.size - 5}条记录")

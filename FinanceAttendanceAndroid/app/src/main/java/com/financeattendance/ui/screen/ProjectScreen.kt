@@ -52,11 +52,10 @@ fun ProjectScreen(
                 Text("添加项目")
             }
             
-            // 简单显示项目列表
             if (projects.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = 16.dp)) {
                     projects.take(5).forEach { project ->
-                        Text("- ${project.name} (预算: ${project.budget}元)")
+                        Text("- ${project.name} (合同金额: ${project.contractAmount}元)")
                     }
                     if (projects.size > 5) {
                         Text("... 还有${projects.size - 5}个项目")

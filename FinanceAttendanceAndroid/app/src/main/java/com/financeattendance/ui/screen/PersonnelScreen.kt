@@ -52,11 +52,10 @@ fun PersonnelScreen(
                 Text("添加人员")
             }
             
-            // 简单显示人员列表
             if (persons.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = 16.dp)) {
                     persons.take(5).forEach { person ->
-                        Text("- ${person.name} (${person.position})")
+                        Text("- ${person.name} (${person.personType})")
                     }
                     if (persons.size > 5) {
                         Text("... 还有${persons.size - 5}位人员")

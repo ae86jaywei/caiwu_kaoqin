@@ -52,11 +52,10 @@ fun SalaryScreen(
                 Text("添加工资记录")
             }
             
-            // 简单显示记录列表
             if (records.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = 16.dp)) {
                     records.take(5).forEach { record ->
-                        Text("- ${record.personId}: ${record.amount}元 (${record.payDate})")
+                        Text("- ${record.personId}: ${record.shouldPay}元 (${record.payDate})")
                     }
                     if (records.size > 5) {
                         Text("... 还有${records.size - 5}条记录")

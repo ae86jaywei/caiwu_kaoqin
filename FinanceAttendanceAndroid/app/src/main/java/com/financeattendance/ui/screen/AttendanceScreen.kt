@@ -52,11 +52,10 @@ fun AttendanceScreen(
                 Text("打卡")
             }
             
-            // 简单显示记录列表
             if (records.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = 16.dp)) {
                     records.take(5).forEach { record ->
-                        Text("- ${record.date} ${record.morningStart ?: "未打卡"}")
+                        Text("- ${record.clockDate} ${record.morningStart ?: "未打卡"}")
                     }
                     if (records.size > 5) {
                         Text("... 还有${records.size - 5}条记录")

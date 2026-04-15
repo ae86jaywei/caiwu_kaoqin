@@ -52,11 +52,10 @@ fun WorkRecordScreen(
                 Text("添加工作记录")
             }
             
-            // 简单显示记录列表
             if (records.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = 16.dp)) {
                     records.take(5).forEach { record ->
-                        Text("- ${record.workDate}: ${record.hours}小时")
+                        Text("- ${record.workDate}: ${record.workContent}")
                     }
                     if (records.size > 5) {
                         Text("... 还有${records.size - 5}条记录")
