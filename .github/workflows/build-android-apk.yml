@@ -17,9 +17,12 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4.1.1
     
-    - uses: actions/cache@v4
+    - name: Create Gradle cache directory
+      run: mkdir -p ~/.gradle/caches
+      
+    - uses: actions/cache@v4.0.2
       with:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
@@ -120,7 +123,7 @@ jobs:
 
     - name: Create Release and Upload APK
       if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2.0.8
       with:
         tag_name: release-${{ github.sha }}
         name: Release ${{ github.sha }}
