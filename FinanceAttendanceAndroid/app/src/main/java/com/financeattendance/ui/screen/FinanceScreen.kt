@@ -94,11 +94,14 @@ fun FinanceScreen(
             onConfirm = { recordType, amount, remark ->
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 val today = dateFormat.format(Date())
+                val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val now = timeFormat.format(Date())
                 val record = FinanceRecord(
                     recordType = recordType,
                     amount = amount,
                     date = today,
-                    remark = remark
+                    remark = remark,
+                    createTime = now
                 )
                 viewModel.addRecord(record)
                 showAddDialog = false
