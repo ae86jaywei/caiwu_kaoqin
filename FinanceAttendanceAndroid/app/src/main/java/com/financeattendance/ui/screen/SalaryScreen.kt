@@ -25,7 +25,7 @@ fun SalaryScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadRecords()
+        viewModel.loadRecords(null)
     }
 
     Scaffold { innerPadding ->
@@ -39,7 +39,7 @@ fun SalaryScreen(
         ) {
             Text("工资记录", style = androidx.compose.material3.MaterialTheme.typography.headlineMedium)
             
-            if (errorMessage.isNotEmpty()) {
+            if (errorMessage != null && errorMessage!!.isNotEmpty()) {
                 Text("错误: $errorMessage", color = androidx.compose.material3.MaterialTheme.colorScheme.error)
             }
             

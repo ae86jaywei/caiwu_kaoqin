@@ -39,7 +39,7 @@ fun ProjectScreen(
         ) {
             Text("项目管理", style = androidx.compose.material3.MaterialTheme.typography.headlineMedium)
             
-            if (errorMessage.isNotEmpty()) {
+            if (errorMessage != null && errorMessage!!.isNotEmpty()) {
                 Text("错误: $errorMessage", color = androidx.compose.material3.MaterialTheme.colorScheme.error)
             }
             

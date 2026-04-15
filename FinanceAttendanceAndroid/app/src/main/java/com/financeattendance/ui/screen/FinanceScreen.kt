@@ -25,7 +25,7 @@ fun FinanceScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadRecords()
+        viewModel.loadRecords("", "", "")
     }
 
     Scaffold { innerPadding ->
@@ -39,7 +39,7 @@ fun FinanceScreen(
         ) {
             Text("财务记录", style = androidx.compose.material3.MaterialTheme.typography.headlineMedium)
             
-            if (errorMessage.isNotEmpty()) {
+            if (errorMessage != null && errorMessage!!.isNotEmpty()) {
                 Text("错误: $errorMessage", color = androidx.compose.material3.MaterialTheme.colorScheme.error)
             }
             
