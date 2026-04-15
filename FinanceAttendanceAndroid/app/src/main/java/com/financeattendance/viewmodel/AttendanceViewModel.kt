@@ -50,6 +50,22 @@ class AttendanceViewModel @Inject constructor(
         }
     }
 
+    fun addRecord(record: AttendanceRecord) {
+        viewModelScope.launch {
+            try {
+                _errorMessage.value = null
+                val newRecord = record.copy(
+                    id = UUID.randomUUID().toString(),
+                    createTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+                )
+                repository.addRecord(newRecord)
+                loadRecords("", "", "", "")
+            } catch (e: Exception) {
+                _errorMessage.value = "添加考勤记录失败: ${e.message}"
+            }
+        }
+    }
+
     fun clockIn(personId: String, period: String, projectId: String?, customStart: String?, customEnd: String?) {
         viewModelScope.launch {
             try {
